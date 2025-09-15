@@ -1,5 +1,4 @@
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 using MvcMovies.Data;
 using MvcMovies.Models;
 
@@ -38,5 +37,6 @@ app.MapControllerRoute(
     pattern: "{controller=Home}/{action=Index}/{id?}")
     .WithStaticAssets();
 
+app.UseRequestLocalization("HU-hu");
 
 app.Run();
