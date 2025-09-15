@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using MvcMovies.Data;
@@ -20,9 +16,18 @@ namespace MvcMovies.Controllers
         }
 
         // GET: Movies
-        public async Task<IActionResult> Index(string searchString)
+        public async Task<IActionResult> Index(string movieGenre, string searchString)
         {
             if (_context.Movie == null) return Problem("Entity set Movie is null");
+
+            //IQueryable<string> genreQuerry = from m in _context.Movie
+            //                                 orderby m.Genre
+            //                                 select m.Genre;
+
+            var genreQuerry = _context.Movie
+                .Select(m => m.Genre)
+                .Distinct()
+                .Order();
 
             //var movies = from m in _context.Movie select m;
             var movies = _context.Movie.Select(m => m);
@@ -32,7 +37,18 @@ namespace MvcMovies.Controllers
                 movies = movies.Where(s => s.Title.ToUpper().Contains(searchString.ToUpper()));
             }
 
-            return View(await movies.ToListAsync());
+            if (!string.IsNullOrEmpty(movieGenre))
+            {
+                movies = movies.Where(x => x.Genre == movieGenre);
+            }
+
+            var movieGenreVM = new MovieGenreViewModel
+            {
+                Genres = new SelectList(await genreQuerry.ToListAsync()),
+                Movies = await movies.ToListAsync(),
+            };
+
+            return View(movieGenreVM);
         }
 
         //[HttpPost]
@@ -70,7 +86,7 @@ namespace MvcMovies.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Title,ReleaseDate,Genre,Price")] Movie movie)
+        public async Task<IActionResult> Create([Bind("Id,Title,ReleaseDate,Genre,Price,Rating")] Movie movie)
         {
             if (ModelState.IsValid)
             {
@@ -103,7 +119,7 @@ namespace MvcMovies.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Title,ReleaseDate,Genre,Price")] Movie movie)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Title,ReleaseDate,Genre,Price,Rating")] Movie movie)
         {
             if (id != movie.Id)
             {

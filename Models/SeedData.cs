@@ -18,6 +18,7 @@ public static class SeedData
                     ReleaseDate = DateTime.Parse("2001-11-04"),
                     Genre = "Adventure",
                     Price = 7.99M,
+                    Rating = "R",
                 },
                 new Movie //02
                 {
@@ -25,6 +26,7 @@ public static class SeedData
                     ReleaseDate = DateTime.Parse("2002-11-03"),
                     Genre = "Adventure",
                     Price = 8.99M,
+                    Rating = "R",
                 },
                 new Movie //03
                 {
@@ -32,6 +34,7 @@ public static class SeedData
                     ReleaseDate = DateTime.Parse("2004-05-23"),
                     Genre = "Adventure",
                     Price = 6.99M,
+                    Rating = "R",
                 },
                 new Movie //04
                 {
@@ -39,6 +42,7 @@ public static class SeedData
                     ReleaseDate = DateTime.Parse("2005-11-05"),
                     Genre = "Adventure",
                     Price = 7.99M,
+                    Rating = "R",
                 }
             );
             context.SaveChanges();
